@@ -1,7 +1,15 @@
 <template>
   <div>
-    <el-form ref="loginForm" v-bind:model="loginForm" :rules="rules" class="loginContainer">
-      <h3 class="loginTitle" >系统登录</h3>
+    <el-form ref="loginForm"
+             v-bind:model="loginForm"
+             :rules="rules"
+             class="loginContainer"
+             v-loading="loading"
+
+             element-loading-text="正在登录"
+             element-loading-spinner="el-icon-loading"
+             element-loading-background="rgba(0, 0, 0, 0.8)">
+      <h3 class="loginTitle">系统登录</h3>
 
       <el-form-item prop="username">
         <el-input type="text" auto-complete="false" v-model="loginForm.username" placeholder="请输入用户名"></el-input>
@@ -14,7 +22,7 @@
       <el-form-item prop="code">
         <el-input type="text" auto-complete="false" v-model="loginForm.code" style="width:250px;margin-right: 5px"
                   placeholder="点击图片更换验证码"></el-input>
-        <img :src="captchUrl">
+        <img :src="captchUrl" @click="updateCaptcha">
       </el-form-item>
 
       <el-checkbox v-model="checked" class="loginRemember">记住我</el-checkbox>
@@ -30,8 +38,9 @@ export default {
   name: "Login",
   data() {
     return {
-      captchUrl: "",
+      captchUrl: "/captcha?time=" + new Date(),
       checked: "",
+      loading: false,
       loginForm: {
         username: "admin",
         password: "123",
@@ -45,14 +54,23 @@ export default {
     }
   },
   methods: {
+    updateCaptcha() {
+      this.captchUrl = "/captcha?time=" + new Date();
+    },
     submitLogin() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          this.$message({
-            showClose: true,
-            message: '登录成功',
-            type: 'success'
-          });
+          this.loading = true;
+          this.postRequest("/login", this.loginForm).then(resp => {
+            if (resp) {
+              this.loading = false;
+              const tokenStr = resp.obj.tokenHead + resp.obj.token;
+              //存储用户token
+              window.sessionStorage.setItem("tokenStr",tokenStr);
+              //跳转首页
+              this.$router.replace("/home");
+            }
+          })
         } else {
           this.$message({
             showClose: true,
@@ -90,7 +108,7 @@ export default {
   margin: 0px 0px 15px 0px;
 }
 
-.el-form-item__content {
+el-form-item {
   display: flex;
   align-items: center;
 }
