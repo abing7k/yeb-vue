@@ -15,7 +15,7 @@
               </template>
               <el-menu-item
                   :index="children"
-                  v-for="(children,indexj) in item.children">
+                  v-for="(children,indexj) in item.children" :key="indexj">
                 {{ children.name }}
               </el-menu-item>
             </el-submenu>
