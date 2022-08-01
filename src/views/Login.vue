@@ -28,7 +28,6 @@
       <el-checkbox v-model="checked" class="loginRemember">记住我</el-checkbox>
       <el-button type="primary" @click="submitLogin" style="width: 100%">登录</el-button>
 
-
     </el-form>
   </div>
 </template>
