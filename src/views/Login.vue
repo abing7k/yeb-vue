@@ -5,7 +5,6 @@
              :rules="rules"
              class="loginContainer"
              v-loading="loading"
-
              element-loading-text="正在登录"
              element-loading-spinner="el-icon-loading"
              element-loading-background="rgba(0, 0, 0, 0.8)">
@@ -65,7 +64,7 @@ export default {
             if (resp) {
               const tokenStr = resp.obj.tokenHead + resp.obj.token;
               //存储用户token
-              window.sessionStorage.setItem("tokenStr",tokenStr);
+              window.sessionStorage.setItem("tokenStr", tokenStr);
               //跳转首页
               this.$router.replace("/home");
             }
